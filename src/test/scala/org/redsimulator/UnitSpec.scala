@@ -1,10 +1,12 @@
 package org.redsimulator
 
 import org.scalatest._
+import org.scalatest.mock.MockitoSugar
 
-abstract class UnitSpec
+trait UnitSpec
   extends WordSpecLike
   with Matchers
   with OptionValues
-  with Inspectors {
+  with Inspectors
+  with MockitoSugar {
 }
