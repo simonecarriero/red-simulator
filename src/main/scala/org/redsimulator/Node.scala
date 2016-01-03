@@ -10,6 +10,7 @@ object Node {
 
 trait Node {
   import Node._
+  val id: Int
   val position = Point(rand.nextDouble, rand.nextDouble)
   var neighbours: Seq[NodeRef] = Seq()
 }
