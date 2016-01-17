@@ -1,7 +1,7 @@
 package org.redsimulator
 
 import akka.actor._
-import org.redsimulator.NodeActor.{NetworkView, Start}
+import org.redsimulator.NodeActor.{LocationClaimMessage, NetworkView, Start}
 import org.redsimulator.MasterActor.Subscription
 
 object NodeActor {
@@ -9,6 +9,7 @@ object NodeActor {
 
   case object Start
   case class NetworkView(n: Seq[NodeRef])
+  case class LocationClaimMessage(id: Int, position: Point)
 }
 
 class NodeActor(master: ActorRef, val id: Int) extends Actor with Node {
@@ -17,7 +18,15 @@ class NodeActor(master: ActorRef, val id: Int) extends Actor with Node {
     case NetworkView(v) => {
       println(s"received ${v.size} neighbours")
       neighbours = v
+      sendLocationClaim
+    }
+    case LocationClaimMessage(id, position) => {
+      println(s"received claim from ${id}")
     }
     case m => println(s"Node received '$m'")
+  }
+
+  def sendLocationClaim = {
+    neighbours foreach { _.actorRef ! LocationClaimMessage(id, position) }
   }
 }
