@@ -11,7 +11,7 @@ object MasterActor {
 
   sealed trait Data
   case object NoData extends Data
-  case class Subscription(position: Point) extends Data
+  case class Subscription(id: Int, position: Point) extends Data
 }
 
 class MasterActor extends FSM[State, Data] with Master {
@@ -21,7 +21,7 @@ class MasterActor extends FSM[State, Data] with Master {
 
   when(WaitingSubscriptions, stateTimeout = 5 seconds) {
     case Event(s: Subscription, _) => {
-      addNode(sender, s.position)
+      addNode(s.id, sender, s.position)
       stay
     }
     case Event(StateTimeout, _) => {

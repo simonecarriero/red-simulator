@@ -9,8 +9,8 @@ trait Master {
   val r: Double
   var nodes: mutable.Seq[NodeRef] = mutable.Seq()
 
-  def addNode(nodeActor: ActorRef, position: Point): Unit = {
-    nodes = nodes :+ NodeRef(nodeActor, position)
+  def addNode(id: Int, nodeActor: ActorRef, position: Point): Unit = {
+    nodes = nodes :+ NodeRef(id, nodeActor, position)
     println(s"Master received subscription from $nodeActor in ${position}")
   }
 
