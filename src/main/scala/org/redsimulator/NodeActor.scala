@@ -14,7 +14,7 @@ object NodeActor {
   def props(master: ActorRef, id: Int, position: Point = randomPoint): Props = Props(classOf[NodeActor], master, id, position)
 
   case object Start
-  case class NetworkView(n: Seq[NodeRef])
+  case class NetworkView(neighbours: Seq[NodeRef])
   case class LocationClaimMessage(id: Int, position: Point)
   case class ControlMessage(locationClaim: LocationClaimMessage, destination: Point)
 }
@@ -29,13 +29,14 @@ class NodeActor(master: ActorRef, val id: Int, val pos: Point) extends Actor wit
 
   def receive = {
     case Start => master ! Subscription(id, position)
-    case NetworkView(v) => {
-      println(s"received ${v.size} neighbours")
-      neighbours = v
-      sendLocationClaim
-    }
+    case m: NetworkView => processNetworkView(m) 
     case m: LocationClaimMessage => processLocationClaimMessage(m)
     case m: ControlMessage => processControlMessage(m)
+  }
+  
+  def processNetworkView(msg: NetworkView) = {
+    neighbours = msg.neighbours
+    sendLocationClaim
   }
 
   def sendLocationClaim = {
