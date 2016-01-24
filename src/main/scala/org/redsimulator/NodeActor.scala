@@ -20,7 +20,6 @@ object NodeActor {
 }
 
 class NodeActor(master: ActorRef, val id: Int, val pos: Point) extends Actor with Node {
-  val simulationRand = 12345 //todo to be sent from master
   override val position = pos
   override val p = 1.0
   override val g = 1
@@ -51,7 +50,7 @@ class NodeActor(master: ActorRef, val id: Int, val pos: Point) extends Actor wit
   def processLocationClaimMessage(msg: LocationClaimMessage) = {
     withProbabilityP {
       for (i <- 1 to g) {
-        val destination = pseudoRandomPosition(id, simulationRand, i)
+        val destination = pseudoRandomPosition(id, Simulation.rand, i)
         val controlMessage = ControlMessage(msg, destination)
         processControlMessage(controlMessage)
       }

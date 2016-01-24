@@ -3,6 +3,8 @@ package org.redsimulator
 import akka.actor.{Props, ActorSystem}
 import org.redsimulator.NodeActor.Start
 
+import scala.util.Random
+
 object Simulation extends App {
   implicit val system = ActorSystem("RedSimulatorSystem")
   val master = system.actorOf(Props(classOf[MasterActor]), "masterActor")
@@ -10,6 +12,7 @@ object Simulation extends App {
   def createActor(id: Int) = system.actorOf(NodeActor.props(master, id), s"NodeActor$id")
   def createCloneActor = system.actorOf(NodeActor.props(master, 1), s"NodeActor1Clone")
 
+  val rand = new Random().nextInt
   List.range(1, numberOfNodes) map createActor foreach { _ ! Start }
   createCloneActor ! Start
 }
