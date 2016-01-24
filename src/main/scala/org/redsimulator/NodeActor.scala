@@ -28,12 +28,17 @@ class NodeActor(master: ActorRef, val id: Int, val pos: Point) extends Actor wit
   var storedLocationClaims: mutable.Seq[LocationClaimMessage] = mutable.Seq()
 
   def receive = {
-    case Start => master ! Subscription(id, position)
+    case Start => processStart
     case m: NetworkView => processNetworkView(m) 
     case m: LocationClaimMessage => processLocationClaimMessage(m)
     case m: ControlMessage => processControlMessage(m)
   }
-  
+
+  def processStart = {
+    val subscription = Subscription(id, position)
+    master ! subscription
+  }
+
   def processNetworkView(msg: NetworkView) = {
     neighbours = msg.neighbours
     sendLocationClaim
